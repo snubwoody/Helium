@@ -1,6 +1,7 @@
 pub mod events;
 pub mod view;
-use crate::{geometry::{CirclePipeline, RectPipeline, RenderContext, TextPipeline}, Size};
+
+use crate::{geometry::RenderContext,Size};
 use async_std::task;
 use view::View;
 use winit::{
@@ -46,20 +47,20 @@ impl App {
         let mut state = task::block_on(AppState::new(&self.window));
 		// TODO when the window is minimized the size of the widgets are changing to zero which
 		// causing wgpu to panic.
-        self.event_loop
-        .run(|event, window_target| match event {
-            winit::event::Event::WindowEvent { event, .. } => match event {
-                WindowEvent::CloseRequested => window_target.exit(),
-                WindowEvent::RedrawRequested => self.views[self.index].render(&state),
-                WindowEvent::Resized(size) => {
-					state.resize(size);
-					self.window.request_redraw();
-				},
-                event => {self.views[self.index].handle_events(event,&self.window);}
-            },
-            _ => {}
-        })
-        .expect("Event loop error occured");
+        // self.event_loop
+        // .run(|event, window_target| match event {
+        //     winit::event::Event::WindowEvent { event, .. } => match event {
+        //         WindowEvent::CloseRequested => window_target.exit(),
+        //         WindowEvent::RedrawRequested => self.views[self.index].render(&state),
+        //         WindowEvent::Resized(size) => {
+		// 			state.resize(size);
+		// 			self.window.request_redraw();
+		// 		},
+        //         event => {self.views[self.index].handle_events(event,&self.window);}
+        //     },
+        //     _ => {}
+        // })
+        // .expect("Event loop error occured");
     }
 }
 
@@ -75,7 +76,6 @@ pub struct AppState<'a> {
 impl<'a> AppState<'a> {
     pub async fn new(window: &'a Window) -> Self {
         let size = window.inner_size().into();
-		
 
         // Handle to wpgu for creating a surface and an adapter
         let instance = wgpu::Instance::new(wgpu::InstanceDescriptor {
@@ -112,7 +112,6 @@ impl<'a> AppState<'a> {
 
         let surface_caps = surface.get_capabilities(&adapter);
 
-        // Get an sRGB texture format
         let surface_format = surface_caps
             .formats
             .iter()
@@ -120,7 +119,6 @@ impl<'a> AppState<'a> {
             .copied()
             .unwrap_or(surface_caps.formats[0]);
 
-        // The surface configuration
         let config = wgpu::SurfaceConfiguration {
             usage: wgpu::TextureUsages::RENDER_ATTACHMENT,
             format: surface_format,
@@ -132,7 +130,6 @@ impl<'a> AppState<'a> {
             desired_maximum_frame_latency: 2,
         };
 
-        // Configure the surface for presentation
         surface.configure(&device, &config);
 
         let context = RenderContext::new(&device, &config, &size);

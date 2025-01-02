@@ -1,4 +1,5 @@
 use helium_core::size::Size;
+use wgpu::vertex_attr_array;
 use crate::geometry::{uniform::UniformBuilder, vertex::Vertex};
 
 // TODO could maybe move the buffers into herer
@@ -70,7 +71,6 @@ impl RectPipeline {
 			}
 		);
 
-		
 		// TODO replace with builder
 		let buffer_layout = wgpu::VertexBufferLayout { 
 			array_stride: std::mem::size_of::<Vertex>() as wgpu::BufferAddress, 

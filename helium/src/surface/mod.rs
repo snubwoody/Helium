@@ -15,6 +15,7 @@ pub mod icon;
 use std::fmt::Debug;
 use crate::{app::AppState, Bounds, Position, Size};
 
+// TODO maybe change to primitive?
 /// The surfaces are the items that are actually responsible for drawing the pixels to the 
 /// screen. It is the final stage in the pipeline, each [`Surface`] surface holds the data 
 /// responsible for it's rendering needs.

@@ -4,6 +4,19 @@ use crate::{
     app::events::Event, impl_events, impl_style, impl_widget, surface::rect::RectSurface, widgets::{Widget, WidgetBody}, Color
 };
 
+/// An [`HStack`] is a [`Widget`] that arranges children horizontally. You can use the
+/// `hstack!` macro for convienence.
+/// 
+/// # Example with `hstack!`
+/// ```no_run
+/// use helium::hstack;
+/// use helium::widgets::{Button};
+/// 
+/// hstack!{
+/// 	Button::new("Click me!")
+/// }
+/// ```
+/// 
 pub struct HStack {
 	pub id:String,
     pub children: Vec<Box<dyn Widget>>,

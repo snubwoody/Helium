@@ -38,7 +38,7 @@ impl Color {
 	/// 
 	/// assert_eq!(color.into_hex_string(),format!("#ffffff"))
 	/// ```
-	/// Note than this does not do any color conversion
+	/// **NOTE** than this does not do any color conversion,
 	/// so invalid hex codes will returned as is
 	pub fn into_hex_string(&self) -> String {
 		match self {
@@ -105,7 +105,16 @@ impl Color {
 	}
 }
 
+// TODO also impl try from string
+impl ToString for Color {
+	/// Convert this color into 
+	fn to_string(&self) -> String {
+		todo!()		
+	}
+}
+
 impl Default for Color {
+	/// The default color is `Transparent` i.e. Rgba(0,0,0,0)
 	fn default() -> Self {
 		Self::Rgba(0,0,0,0)
 	}

@@ -3,139 +3,23 @@ pub mod text;
 pub mod rect;
 pub mod circle;
 pub mod icon;
-use std::{collections::HashMap, str};
 use circle::CirclePipeline;
 use icon::IconPipeline;
 use image::ImagePipeline;
 use rect::RectPipeline;
 use text::TextPipeline;
 use wgpu::{
-	BindGroupLayoutEntry, ColorTargetState, FragmentState, MultisampleState, PipelineLayoutDescriptor, PrimitiveState, RenderPipelineDescriptor, VertexBufferLayout, VertexState
+	ColorTargetState, FragmentState, MultisampleState, PipelineLayoutDescriptor, PrimitiveState, RenderPipelineDescriptor, VertexBufferLayout, VertexState
 };
 use helium_core::size::Size;
 use crate::geometry::{uniform::UniformBuilder, vertex::Vertex};
 use super::uniform::Uniform;
 
-pub struct BufferGroupBuilder<'b>{
-	count:usize,
-	buffers:Vec<(usize,wgpu::BufferDescriptor<'b>)>,
-	samplers:Vec<(usize,wgpu::SamplerDescriptor<'b>)>,
-	label:String
-}
-
-impl<'b> BufferGroupBuilder<'b> {
-	pub fn new(label:&str) -> Self{
-		todo!()
-	}
-
-	fn add_buffer(mut self,label:&'b str,size:u64,usage:wgpu::BufferUsages) -> Self{
-		let buffer = wgpu::BufferDescriptor{
-			size,
-			usage,
-			label:Some(label),
-			mapped_at_creation:false,
-		};
-		self.buffers.push((self.count,buffer));
-		self.count += 1;
-		self
-	}
-
-	/// Add a sampler with a default config
-	fn add_default_sampler(mut self,label:&'b str) -> Self{
-		let sampler = wgpu::SamplerDescriptor { 
-			label: Some(label), 
-			..Default::default()
-		};
-		self.samplers.push((self.count,sampler));
-		self.count += 1;
-		self
-	}
-
-	fn add_texure(mut self) -> Self{
-		self
-	}
-
-	fn build(self,device:&wgpu::Device){
-		let buffers  = self.buffers.iter().map(|desc|{
-			device.create_buffer(&desc.1)
-		}).collect::<Vec<_>>();
-
-		let mut layout_entries:Vec<BindGroupLayoutEntry> = vec![];
-
-		let buffer_entries = self.buffers.iter().map(|buffer|{
-			wgpu::BindGroupLayoutEntry{
-				binding:buffer.0 as u32,
-				visibility:wgpu::ShaderStages::FRAGMENT,
-				ty: wgpu::BindingType::Buffer { 
-					ty: wgpu::BufferBindingType::Uniform, 
-					has_dynamic_offset: false, 
-					min_binding_size: None 
-				},
-				count:None
-			}
-		}).collect::<Vec<_>>();
-		
-		let sampler_entries = self.buffers.iter().map(|desc|{
-			wgpu::BindGroupLayoutEntry{
-				binding:desc.0 as u32,
-				visibility:wgpu::ShaderStages::FRAGMENT,
-				ty: wgpu::BindingType::Sampler(wgpu::SamplerBindingType::Filtering),
-				count:None
-			}
-		}).collect::<Vec<_>>();
-
-		layout_entries.extend(buffer_entries);
-		layout_entries.extend(sampler_entries);
-
-		let bounds_layout = device.create_bind_group_layout(
-			&wgpu::BindGroupLayoutDescriptor{
-				label:Some(format!("{} bind group layout",self.label).as_str()),
-				entries:&layout_entries,
-			}
-		);
-
-		let bound_bind_group = device.create_bind_group(&wgpu::BindGroupDescriptor {
-            label: Some(format!("{} bind group",self.label).as_str()),
-            layout: &bounds_layout,
-            entries: &[
-                wgpu::BindGroupEntry {
-                    binding: 0,
-                    resource: corner_radius.as_entire_binding(),
-                },
-                wgpu::BindGroupEntry {
-                    binding: 1,
-                    resource: size_buffer.as_entire_binding(),
-                },
-                wgpu::BindGroupEntry {
-                    binding: 2,
-                    resource: position_buffer.as_entire_binding(),
-                },
-            ],
-        });
-	}
-}
-
-/// An abstraction over `wgpu::Buffer` and `wgpu::BindGroup`, this struct holds
-/// multiple buffers and their bind group
-pub struct BufferGroup{
-	bind_group:wgpu::BindGroup,
-	buffers:HashMap<String,wgpu::BindGroup>
-}
-
-impl BufferGroup {
-	/// Get the bind group
-	pub fn bind_group(&self) -> &wgpu::BindGroup{
-		&self.bind_group
-	}
-
-	/// Get the buffers
-	pub fn buffers(&self) -> &HashMap<String,wgpu::BindGroup>{
-		&self.buffers
-	}
-}
 // TODO could maybe move the buffers into herer
 // TODO pls refactor this long and ugly code, there's a lot of reused code;
-/// Holds the render pipeline
+/// An abstraction over [`wgpu::RenderPipeline`](https://docs.rs/wgpu/22.1.0/wgpu/struct.RenderPipeline.html)
+/// that containts **all** the resources required for the pipeline, namely the buffers, bind groups, 
+/// and texture samplers.
 #[derive(Debug)]
 pub struct Pipeline{
 	pub pipeline: wgpu::RenderPipeline,

@@ -1,5 +1,5 @@
 use std::fmt::Debug;
-use wgpu::util::DeviceExt;
+use wgpu::{util::DeviceExt, TextureViewDescriptor};
 use crate::{
 	app::AppState, impl_surface, surface::Surface, 
 	geometry::vertex::Vertex, Bounds, Color, Position, Size

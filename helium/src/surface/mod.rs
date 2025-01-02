@@ -15,8 +15,9 @@ pub mod icon;
 use std::fmt::Debug;
 use crate::{app::AppState, Bounds, Position, Size};
 
-/// Holds infomation about different types of widgets that can be 
-/// drawn to the screen i.e. Shapes and Text.
+/// The surfaces are the items that are actually responsible for drawing the pixels to the 
+/// screen. It is the final stage in the pipeline, each [`Surface`] surface holds the data 
+/// responsible for it's rendering needs.
 pub trait Surface:Debug {
 	/// Draw the surface onto the screen
 	fn draw(
@@ -29,7 +30,7 @@ pub trait Surface:Debug {
 	/// Set the [`Position`] of the [`Surface`]
 	fn position(&mut self, x:f32,y:f32);	
 	
-	/// Get the [`Surface`] position.
+	/// Get the [`Surface`] [`Position`].
 	fn get_position(&self) -> Position;
 
 	/// Set the [`Size`] of the [`Surface`].

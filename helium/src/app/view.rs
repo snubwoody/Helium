@@ -1,16 +1,12 @@
-use std::{collections::HashMap, time::Instant};
-
-use crystal::{Layout, LayoutSolver};
-use helium_core::{position::Position, size::Size};
+use std::time::Instant;
+use crystal::LayoutSolver;
 use winit::window::Window;
-
 use crate::widgets::{Widget, WidgetBody};
-use super::{events::{ EventQueue}, AppState};
+use super::{events::EventQueue, AppState};
 
-/// A page
 pub struct View{
 	root_layout:Box<dyn crystal::Layout>,
-	root_widget:Box<dyn Widget>,
+	_root_widget:Box<dyn Widget>,
 	root_body:WidgetBody,
 	event_queue:EventQueue,
 }
@@ -22,7 +18,7 @@ impl View {
 		Self { 
 			root_body,
 			root_layout,
-			root_widget:Box::new(root_widget),
+			_root_widget:Box::new(root_widget),
 			event_queue,
 		}
 	}
@@ -59,9 +55,7 @@ impl View {
 		});
 		
 		
-		let layout_now = Instant::now();
 		let _ = LayoutSolver::solve(&mut *self.root_layout, state.size);
-		log::debug!("{:?}ms taken to solve layout",layout_now.elapsed());
 		
 		// Has to be in this order otherwise it crashes particularly because of 0 size textures
 		// FIXME above
@@ -77,7 +71,7 @@ impl View {
 	
 		state.queue.submit(std::iter::once(encoder.finish()));
 		output.present();
-		//log::debug!("{}ms",now.elapsed().as_millis())
+		log::debug!("{}fps",1000/now.elapsed().as_millis())
 	}
 }
 

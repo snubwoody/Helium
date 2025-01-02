@@ -69,7 +69,6 @@ impl Surface for ImageSurface {
 		context: &crate::geometry::RenderContext,
 		state: &AppState
 	) {
-
 		// FIXME issue with fill sizing causing overflow
 		// FIXME wgpu panics if size is 0 
 		let (texture,texture_size) = self.build(&state.device);

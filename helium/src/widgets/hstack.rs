@@ -57,8 +57,8 @@ impl Widget for HStack {
 			.children
 			.iter()
 			.map(|widget| {
-			let (body,layout) = widget.build();
-			return (Box::new(body),layout);
+				let (body,layout) = widget.build();
+				return (Box::new(body),layout);
 			})
 			.collect();
 		

@@ -25,6 +25,7 @@ impl RectSurface {
     pub fn new(x: f32, y: f32, width: f32, height: f32, color: Color) -> Self {
         let size = Size::new(width, height);
         let position = Position::new(x, y);
+
         Self {
             position,
             size,
@@ -73,7 +74,7 @@ impl Surface for RectSurface {
         // TODO could maybe use the uniform struct
         let corner_radius = state.device.create_buffer_init(&BufferInitDescriptor {
             label: Some("Corner radius buffer"),
-            contents: bytemuck::cast_slice(&[self.corner_radius as f32]), // Type casting is important maybe save field as f32
+            contents: bytemuck::cast_slice(&[self.corner_radius as f32]),
             usage: wgpu::BufferUsages::UNIFORM | wgpu::BufferUsages::COPY_DST,
         });
 

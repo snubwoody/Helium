@@ -1,0 +1,11 @@
+[package]
+name = "helium_renderer"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+async-std.workspace = true
+bytemuck.workspace = true
+helium_core = { version = "0.1.0", path = "../helium_core" }
+image.workspace = true
+winit.workspace = true

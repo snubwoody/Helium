@@ -922,6 +922,7 @@ dependencies = [
  "dotenv",
  "env_logger",
  "helium",
+ "helium_renderer",
  "log",
 ]
 
@@ -1366,6 +1367,17 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn 2.0.87",
+]
+
+[[package]]
+name = "helium_renderer"
+version = "0.1.0"
+dependencies = [
+ "async-std",
+ "bytemuck",
+ "helium_core",
+ "image",
+ "winit",
 ]
 
 [[package]]

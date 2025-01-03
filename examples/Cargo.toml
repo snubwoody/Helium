@@ -16,5 +16,10 @@ path = "counter.rs"
 name = "spotify"
 path = "spotify/spotify.rs"
 
+[[example]]
+name = "renderer"
+path = "renderer.rs"
+
 [dependencies]
 dotenv = "0.15.0"
+helium_renderer = { version = "0.1.0", path = "../helium_renderer" }
